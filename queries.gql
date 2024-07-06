@@ -1,0 +1,36 @@
+query getAllUsers {
+  users {
+    id
+    name
+    email
+  }
+}
+
+query getUserById {
+  user(id: "9016ce58-f438-4805-ba3f-e58a9fa4d36f") {
+    id
+    name
+    email
+  }
+}
+
+mutation createUser {
+  createUser(
+    createUserInput: { name: "John Doe 2", email: "john.doe+2@example.com" }
+  ) {
+    id
+    name
+    email
+  }
+}
+
+mutation updateUser {
+  updateUser(
+    updateUserInput: { name: "John Doe 25", email: "john.doe+25@example.com" }
+    id: "3a574fed-87e7-467c-94d4-664fca7fb7d8"
+  )
+}
+
+mutation deleteUser {
+  deleteUser(id: "3a574fed-87e7-467c-94d4-664fca7fb7d8")
+}
