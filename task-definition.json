@@ -1,0 +1,77 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:940878291215:task-definition/backend:1",
+    "containerDefinitions": [
+        {
+            "name": "backend",
+            "image": "940878291215.dkr.ecr.us-east-1.amazonaws.com/backend:latest",
+            "cpu": 256,
+            "memory": 512,
+            "portMappings": [
+                {
+                    "containerPort": 3000,
+                    "hostPort": 3000,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "POSTGRES_URI",
+                    "value": "postgresql://postgres:postgres@terraform-20240707195311114900000001.c5wscaieko70.us-east-1.rds.amazonaws.com:5432/librarydb"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "fargate-backend-logs",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "backend"
+                }
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "backend",
+    "executionRoleArn": "arn:aws:iam::940878291215:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 1,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "registeredAt": "2024-07-07T16:00:42.210000-04:00",
+    "registeredBy": "arn:aws:iam::940878291215:root"
+}

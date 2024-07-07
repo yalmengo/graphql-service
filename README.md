@@ -9,3 +9,8 @@ TODO:
 - [ ] Upload app to AWS w/ terraform 
 
 
+
+aws ecs describe-task-definition \
+   --task-definition backend \
+   --query taskDefinition > task-definition.json
+
