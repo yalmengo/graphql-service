@@ -7,11 +7,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      all:
-        description: 'Run all jobs (true/false)'
-        required: true
-        default: 'false'
 
 env:
   AWS_DEFAULT_REGION: us-east-1
@@ -21,9 +16,6 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    if: >
-      github.event_name == 'push' || 
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.all == 'true')
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -40,9 +32,6 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    if: >
-      github.event_name == 'push' || 
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.all == 'true')
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -59,9 +48,6 @@ jobs:
   test-e2e:
     name: Test e2e
     runs-on: ubuntu-latest
-    if: >
-      github.event_name == 'push' || 
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.all == 'true')
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -78,7 +64,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    # This job runs if it's a workflow_dispatch event, regardless of the 'all' input value.
+    # This job runs if it's a workflow_dispatch event
     if: github.event_name == 'workflow_dispatch'
     needs: [build, test, test-e2e]
     steps:
