@@ -80,6 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     # This job runs if it's a workflow_dispatch event, regardless of the 'all' input value.
     if: github.event_name == 'workflow_dispatch'
+    needs: [build, test, test-e2e]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
