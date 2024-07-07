@@ -64,7 +64,6 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    # This job runs if it's a workflow_dispatch event
     if: github.event_name == 'workflow_dispatch'
     needs: [build, test, test-e2e]
     steps:
@@ -77,9 +76,11 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
         with:
           region: ${{ env.AWS_DEFAULT_REGION }}
-      - name: Build and Push API Docker image
+          access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Build and Push Backend Docker image
         env:
-          AWS_ECR_REPOSITORY: api-image
+          AWS_ECR_REPOSITORY: backend
         run: |
           cd backend
           docker build -t $AWS_ECR_REGISTRY/$AWS_ECR_REPOSITORY:latest .
