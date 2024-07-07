@@ -50,7 +50,7 @@ locals {
   container_definitions = [
     {
       name      = "backend"
-      image     = "940878291215.dkr.ecr.us-east-1.amazonaws.com/backend:latest"
+      image     = "${var.account_id}.dkr.ecr.us-east-1.amazonaws.com/backend:latest"
       essential = true
       portMappings = [
         {

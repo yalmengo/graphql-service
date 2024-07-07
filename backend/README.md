@@ -1,1 +1,1 @@
-# Backend nest app with GraphQL
+# Backend nest app with GraphQL and Postgres
