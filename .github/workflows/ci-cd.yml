@@ -1,0 +1,99 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      all:
+        description: 'Run all jobs (true/false)'
+        required: true
+        default: 'false'
+
+env:
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_ECR_REGISTRY: 940878291215.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'push' || 
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.all == 'true')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20
+      - name: Build Backend
+        run: |
+          cd backend
+          npm install --omit=dev
+          npm run build
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'push' || 
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.all == 'true')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20
+      - name: Install and run tests
+        run: |
+          cd backend
+          npm install
+          npm test
+  
+  test-e2e:
+    name: Test e2e
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'push' || 
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.all == 'true')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20
+      - name: Install and run E2E tests
+        run: |
+          cd backend
+          npm install
+          npm run test:e2e
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    # This job runs if it's a workflow_dispatch event, regardless of the 'all' input value.
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          region: ${{ env.AWS_DEFAULT_REGION }}
+      - name: Build and Push API Docker image
+        env:
+          AWS_ECR_REPOSITORY: api-image
+        run: |
+          cd backend
+          docker build -t $AWS_ECR_REGISTRY/$AWS_ECR_REPOSITORY:latest .
+          docker push $AWS_ECR_REGISTRY/$AWS_ECR_REPOSITORY:latest
